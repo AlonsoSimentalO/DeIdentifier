@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Data
+/data/raw/*
+/data/processed/*
+/data/synthetic/*
+!/data/**/.gitkeep
+
+# Artifacts
+*.pt
+*.bin
+*.ckpt
+mlruns/
+.dvc/cache/
+
+.DS_Store
+Thumbs.db
