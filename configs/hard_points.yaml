@@ -1,0 +1,14 @@
+input:
+  predictions_path: "artifacts/predictions/val_predictions.csv"
+
+weights:
+  uncertainty: 0.4
+  loss_proxy: 0.3
+  cleanlab: 0.3
+
+selection:
+  top_k_percent: 0.2
+
+output:
+  ranked_path: "artifacts/hard_points/hard_datapoints_ranked.csv"
+  review_top_k_path: "artifacts/hard_points/review_top_k.csv"

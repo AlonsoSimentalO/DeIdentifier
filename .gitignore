@@ -13,6 +13,7 @@ venv/
 *.pt
 *.bin
 *.ckpt
+artifacts/
 mlruns/
 .dvc/cache/
 

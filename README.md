@@ -14,3 +14,12 @@ Initial project repository. Base structure only, no implementation yet.
 - **Joel:** Interface / UI.
 - **Oscar:** Model training (HuggingFace) and hard datapoint detection.
 - **Curtis:** Data versioning (DVC).
+
+## Oscar module commands
+- Create/activate venv:
+  - PowerShell: `python -m venv .venv; .\.venv\Scripts\Activate.ps1`
+  - Git Bash: `python -m venv .venv && source .venv/Scripts/activate`
+- Install dependencies: `python -m pip install -r requirements.txt`
+- Train baseline: `python -m src.training.train --config configs/train.yaml`
+- Optuna tuning: `python -m src.training.optuna_tune --config configs/optuna.yaml`
+- Rank hard datapoints: `python -m src.evaluation.hard_datapoints --config configs/hard_points.yaml`
