@@ -5,7 +5,7 @@ mlflow:
   experiment_name: "deidentifier_optuna"
 
 data:
-  input_path: "data/processed/sample_labeled.csv"
+  input_path: "data/processed/synthetic_labeled.csv"
   text_column: "text"
   label_column: "label"
   id_column: "id"
@@ -18,7 +18,7 @@ model:
 search:
   metric_to_optimize: "eval_f1_macro"
   direction: "maximize"
-  n_trials: 2
+  n_trials: 3
 
 space:
   learning_rate:

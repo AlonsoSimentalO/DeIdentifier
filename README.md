@@ -1,25 +1,33 @@
 # mlops-privacy-pipeline
 
-Initial project repository. Base structure only, no implementation yet.
+This repository contains the project pipeline for sensitive-data detection using synthetic data, model fine-tuning, and hard-sample review.
 
-## Pitch Deck (summary)
-- **Challenge:** GDPR rules are getting stricter, while the use of cloud-based AI tools keeps growing.
-- **Solution:** Build a streamlined process to train and set up an **in-house** tool that removes sensitive data from documents.
-- **Approach:** Synthetic data + human-in-the-loop labeling.
-- **Pipeline:** Synthetic data generation -> human validation -> quality filtering -> fine-tuning (DistilBERT/RoBERTa) -> hard datapoint detection -> evaluation and retraining.
-- **Mentioned tooling:** Label Studio, HuggingFace, MLflow, DVC, Docker.
+## Project Goal
+- Build an in-house workflow to detect sensitive information in text documents.
+- Use synthetic data to bootstrap training.
+- Keep a human-in-the-loop improvement cycle through hard datapoint review.
 
-## Team Responsibilities
-- **Alexander:** Front page / Goal & Data, Tools & Pipeline overview, Labeling.
-- **Joel:** Interface / UI.
-- **Oscar:** Model training (HuggingFace) and hard datapoint detection.
-- **Curtis:** Data versioning (DVC).
+## Current Scope Implemented
+- Synthetic dataset generation (`id,text,label`) with Faker-based templates.
+- Text classification fine-tuning with HuggingFace DistilBERT.
+- Hyperparameter search with Optuna.
+- Experiment tracking with MLflow.
+- Hard datapoint ranking using confidence, loss proxy, and Cleanlab scores.
 
-## Oscar module commands
-- Create/activate venv:
+## Commands To Run The Project
+- Create/activate virtual environment:
   - PowerShell: `python -m venv .venv; .\.venv\Scripts\Activate.ps1`
   - Git Bash: `python -m venv .venv && source .venv/Scripts/activate`
 - Install dependencies: `python -m pip install -r requirements.txt`
-- Train baseline: `python -m src.training.train --config configs/train.yaml`
-- Optuna tuning: `python -m src.training.optuna_tune --config configs/optuna.yaml`
+- Generate synthetic data: `python -m src.data_gen.generate_synthetic_data --output data/processed/synthetic_labeled.csv --n-samples 600 --sensitive-ratio 0.5`
+- Train model: `python -m src.training.train --config configs/train.yaml`
+- Run hyperparameter tuning: `python -m src.training.optuna_tune --config configs/optuna.yaml`
 - Rank hard datapoints: `python -m src.evaluation.hard_datapoints --config configs/hard_points.yaml`
+
+## Key Outputs
+- Trained model/checkpoint: `artifacts/model/`
+- Training metrics: `artifacts/reports/train_metrics.json`
+- Optuna trial results: `artifacts/reports/optuna_trials.csv`
+- Best Optuna parameters: `artifacts/reports/optuna_best_params.json`
+- Ranked hard samples: `artifacts/hard_points/hard_datapoints_ranked.csv`
+- Top-k review subset: `artifacts/hard_points/review_top_k.csv`
