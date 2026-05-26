@@ -20,10 +20,10 @@ This repository contains the project pipeline for sensitive-data detection using
   - Git Bash: `python -m venv .venv && source .venv/Scripts/activate`
 - Install dependencies: `python -m pip install -r requirements.txt`
 - old:
-  _- Generate synthetic data: `python -m src.data_gen.generate_synthetic_data --output data/processed/synthetic_labeled.csv --n-samples 600 --sensitive-ratio 0.5`
+  - Generate synthetic data: `python -m src.data_gen.generate_synthetic_data --output data/processed/synthetic_labeled.csv --n-samples 600 --sensitive-ratio 0.5`
   - Train model: `python -m src.training.train --config configs/train.yaml`
   - Run hyperparameter tuning: `python -m src.training.optuna_tune --config configs/optuna.yaml`
-  - Rank hard datapoints: `python -m src.evaluation.hard_datapoints --config configs/hard_points.yaml`_
+  - Rank hard datapoints: `python -m src.evaluation.hard_datapoints --config configs/hard_points.yaml`
 - new:
  - streamlit run Deidentifier.py
 
