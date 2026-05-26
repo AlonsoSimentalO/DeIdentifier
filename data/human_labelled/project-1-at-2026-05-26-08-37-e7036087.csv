@@ -1,0 +1,6 @@
+id,text,label
+0,What a great idea. Let's be sure to catch up on Thursday.,non_sensitive
+1,I can't believe Sara said that. Did she really call Jenny Adams a high-performer?,sensitive
+2,My password is the same as my Grandads second name.,sensitive
+3,You don't know what you're talking about. Bob A. is a lovely guy.,non_sensitive
+4,Actually? You live at Sesamestreet 67?,sensitive
