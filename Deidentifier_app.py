@@ -46,9 +46,7 @@ with col_left:
             )
 
             st.success(success_label)
-            #time.sleep(10)
-            #webbrowser.open(f"{project_url}")
-            #st.markdown(f"[➡️ Open Deidentifier Project]({project_url})", unsafe_allow_html=True)
+            
         except:
             st.error("Could not start LabelStudio. Make sure it's installed.")
 
@@ -65,7 +63,6 @@ with col_left:
 
     # List csv files
     if os.path.exists(downloads_path):
-        #csv_files = [f for f in os.listdir(downloads_path) if f.lower().endswith('.csv')]
         csv_files = [
             f for f in os.listdir(downloads_path) 
             if f.lower().endswith('.csv') and 'project' in f.lower()
@@ -151,31 +148,41 @@ if not auto_refresh:
         st.markdown("<h2>Pipeline</h2>", unsafe_allow_html=True)
         password = st.text_input("Enter password", type="password")
         
+        #
+        python_exe = sys.executable
+        # Define path to human labelled
+        human_labeled_path = "data\human_labelled"
+        # Count how many human_labeled files there are
+        n_human_labeled = len([f for f in os.listdir(human_labeled_path) if f.lower().endswith('.csv')])
+        # Allow user to choose how much synth_data we need
+        n_synth_data = st.slider(f"Number of synthetic samples (to add to the {n_human_labeled} human labeled files)", 
+                                                 min_value = 0, max_value = 2000,
+                                                 value = 600, step = 20)
         if st.button("🚀 Run Full Pipeline", type="primary"):
             if password == "NoFriendsAtDusk":
                 with st.spinner("Running pipeline..."):
-                    try:
-                        python_exe = sys.executable
-
-                        st.write("Generating synthetic data...")
-                        n_synth_data = "600"
+                    try:           
+                        st.write(f"1. Generating {n_synth_data} synthetic samples...")                         
                         subprocess.run([
                             python_exe, "-m", "src.data_gen.generate_synthetic_data",
                             "--output", "data/processed/synthetic_labeled.csv",
-                            "--n-samples", n_synth_data, "--sensitive-ratio", "0.5"], 
+                            "--n-samples", str(n_synth_data), "--sensitive-ratio", "0.5"], 
                             check=True, cwd = os.getcwd())
+                        
+                        st.success(f"✅ Successfully generated {n_synth_data} samples")
 
-                        st.write("Training model...")
+            
+                        st.write("2. Training model...")
                         subprocess.run([python_exe, "-m", "src.training.train", "--config", "configs/train.yaml"], 
-                                       check=True, cwd = os.getcwd())
+                                    check=True, cwd = os.getcwd())
 
-                        st.write("Hyperparameter tuning...")
+                        st.write("3. Hyperparameter tuning...")
                         subprocess.run([python_exe, "-m", "src.training.optuna_tune", "--config", "configs/optuna.yaml"], 
-                                       check=True, cwd = os.getcwd())
+                                    check=True, cwd = os.getcwd())
 
-                        st.write("Ranking hard datapoints...")
+                        st.write("4. Ranking hard datapoints...")
                         subprocess.run([python_exe, "-m", "src.evaluation.hard_datapoints", "--config", "configs/hard_points.yaml"], 
-                                       check=True, cwd = os.getcwd())
+                                    check=True, cwd = os.getcwd())
 
                         st.success("Full pipeline completed!")
                     except Exception as e:
