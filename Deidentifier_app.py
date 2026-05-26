@@ -9,13 +9,25 @@ import sys
 import pandas as pd
 import subprocess
                                     
-st.set_page_config(page_title="DeID Pipeline", layout="centered")
+st.set_page_config(page_title="DeID Pipeline", layout="wide")
 
-
-#st.markdown(md_style, unsafe_allow_html=True)
+# Reduce flicker during rerun
+st.markdown("""
+    <style>
+        [data-testid="stAppViewContainer"] {
+            background-color: #0e1117 !important;
+        }
+        [data-testid="stHeader"] {
+            background-color: #0e1117 !important;
+        }
+        .stColumn {
+            transition: none !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # two columns, define column widths
-col_left, col_right = st.columns([9.5, 5], gap="large")
+col_left, col_right = st.columns([5, 5], gap="large")
 
 # Left sidebar - Labeling Section
 with col_left:
