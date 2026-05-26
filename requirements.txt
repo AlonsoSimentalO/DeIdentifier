@@ -12,3 +12,5 @@ accelerate>=1.1.0
 optuna
 pytest
 faker
+label-studio
+streamlit
