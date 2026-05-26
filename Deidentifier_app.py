@@ -7,7 +7,8 @@ import shutil
 from datetime import datetime
 import sys
 import pandas as pd
-
+import subprocess
+                                    
 st.set_page_config(page_title="DeID Pipeline", layout="centered")
 
 
@@ -46,7 +47,7 @@ with col_left:
     # Get Downloads folder
     downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
     
-    n_secs = 5
+    n_secs = 10
     # Auto-refresh toggle
     auto_refresh = st.checkbox(f"Auto-refresh Downloads every {n_secs} seconds", value=True)
 
@@ -88,8 +89,35 @@ with col_left:
                                 df.to_csv(dst, index=False)
                                 st.success("Moved ✅")
                                 st.toast(f"✅ Processed and moved: {file}", icon="✅")
-                                time.sleep(0.8)
-                                st.rerun()
+                                time.sleep(2)
+                                #st.rerun()
+
+                                # Push to github
+                                try:
+                                    with st.spinner("Pushing to GitHub..."):
+                                        # Add folder
+                                        subprocess.run(["git", "add", "data/human_labelled"], check=True)
+                                        
+                                        # Commit
+                                        result = subprocess.run(["git", "commit", "-m", "Add/Update human labeled data"], 
+                                                            capture_output=True, text=True)
+                                        
+                                        # Push
+                                        subprocess.run(["git", "push"], check=True)
+                                        
+                                        st.success("✅ Pushed")
+                                        st.toast("✅ Successfully pushed human_labelled data to GitHub")
+                                        time.sleep(n_secs)
+                                except subprocess.CalledProcessError as e:
+                                    if "nothing to commit" in str(e.stdout) + str(e.stderr):
+                                        st.info("No new changes to commit")
+                                        time.sleep(n_secs)
+                                    else:
+                                        st.error(f"Git error: {e.stderr if e.stderr else e}")
+                                        time.sleep(n_secs)
+                                except Exception as e:
+                                    st.error(f"Failed: {e}")
+                                time.sleep(n_secs)
                             else:
                                 st.error("CSV must contain at least 'text' and 'label' columns")
                         except Exception as e:
