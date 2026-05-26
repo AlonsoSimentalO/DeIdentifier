@@ -158,7 +158,7 @@ if not auto_refresh:
                         python_exe = sys.executable
 
                         st.write("Generating synthetic data...")
-                        n_synth_data = "50"
+                        n_synth_data = "600"
                         subprocess.run([
                             python_exe, "-m", "src.data_gen.generate_synthetic_data",
                             "--output", "data/processed/synthetic_labeled.csv",
