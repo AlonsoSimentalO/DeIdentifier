@@ -17,8 +17,8 @@ class GenerationConfig:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Generate synthetic labeled documents (id,text,label)")
-    parser.add_argument("--output", type=str, default="data/processed/synthetic_labeled.csv")
+    parser = argparse.ArgumentParser(description="Generate synthetic labeled documents (text,label)")
+    parser.add_argument("--output", type=str, default="data/synthetic/synthetic_labeled.csv")
     parser.add_argument("--n-samples", type=int, default=200)
     parser.add_argument("--sensitive-ratio", type=float, default=0.5)
     parser.add_argument("--locale", type=str, default="en_US")
@@ -82,27 +82,20 @@ def generate_dataset(cfg: GenerationConfig) -> pd.DataFrame:
     n_non_sensitive = cfg.n_samples - n_sensitive
 
     rows = []
-    idx = 1
 
     for _ in range(n_sensitive):
         template = random.choice(sens_templates)
         text = template.format(**_fake_values(fake))
-        rows.append({"id": idx, "text": text, "label": "sensitive"})
-        idx += 1
+        rows.append({"text": text, "label": "sensitive"})
 
     for _ in range(n_non_sensitive):
         template = random.choice(nons_templates)
         text = template
-        rows.append({"id": idx, "text": text, "label": "non_sensitive"})
-        idx += 1
+        rows.append({"text": text, "label": "non_sensitive"})
 
     random.shuffle(rows)
 
-    # Re-assign ids after shuffle for clean sequential ids
-    for i, row in enumerate(rows, start=1):
-        row["id"] = i
-
-    return pd.DataFrame(rows, columns=["id", "text", "label"])
+    return pd.DataFrame(rows, columns=["text", "label"])
 
 
 def main() -> None:

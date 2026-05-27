@@ -5,7 +5,7 @@ mlflow:
   experiment_name: "deidentifier_optuna"
 
 data:
-  input_path: "data/processed/synthetic_labeled.csv"
+  input_path: "data/processed/combined_dataset.csv"
   text_column: "text"
   label_column: "label"
   id_column: "id"

@@ -97,7 +97,7 @@ if not auto_refresh:
                         st.write("Generating synthetic data...")
                         subprocess.run([
                             "python", "-m", "src.data_gen.generate_synthetic_data",
-                            "--output", "data/processed/synthetic_labeled.csv",
+                            "--output", "data/synthetic/synthetic_labeled.csv",
                             "--n-samples", "600", "--sensitive-ratio", "0.5"
                         ], check=True)
 

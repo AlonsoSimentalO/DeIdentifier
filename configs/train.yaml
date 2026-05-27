@@ -4,7 +4,7 @@ mlflow:
   experiment_name: "deidentifier_training"
 
 data:
-  input_path: "data/processed/synthetic_trainval.csv"
+  input_path: "data/processed/combined_dataset.csv"
   text_column: "text"
   label_column: "label"
   id_column: "id"

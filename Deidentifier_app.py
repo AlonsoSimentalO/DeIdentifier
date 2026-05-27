@@ -88,8 +88,6 @@ with col_left:
                             # Restructure to required columns
                             if 'text' in df.columns and 'label' in df.columns:
                                 df = df[['text', 'label']].copy()
-                                df['id'] = range(len(df))          # Add id column
-                                df = df[['id', 'text', 'label']]   # Reorder
                                 
                                 # Remove empty rows
                                 df = df.dropna(subset=['text'])
@@ -165,22 +163,25 @@ if not auto_refresh:
                         st.write(f"1. Generating {n_synth_data} synthetic samples...")                         
                         subprocess.run([
                             python_exe, "-m", "src.data_gen.generate_synthetic_data",
-                            "--output", "data/processed/synthetic_labeled.csv",
+                            "--output", "data/synthetic/synthetic_labeled.csv",
                             "--n-samples", str(n_synth_data), "--sensitive-ratio", "0.5"], 
                             check=True, cwd = os.getcwd())
                         
                         st.success(f"✅ Successfully generated {n_synth_data} samples")
 
+                        st.write("2. Combining datasets...")
+                        subprocess.run([python_exe, "-m", "src.data_proc.process_data"], check=True, cwd=os.getcwd())
+
             
-                        st.write("2. Training model...")
+                        st.write("3. Training model...")
                         subprocess.run([python_exe, "-m", "src.training.train", "--config", "configs/train.yaml"], 
                                     check=True, cwd = os.getcwd())
 
-                        st.write("3. Hyperparameter tuning...")
+                        st.write("4. Hyperparameter tuning...")
                         subprocess.run([python_exe, "-m", "src.training.optuna_tune", "--config", "configs/optuna.yaml"], 
                                     check=True, cwd = os.getcwd())
 
-                        st.write("4. Ranking hard datapoints...")
+                        st.write("5. Ranking hard datapoints...")
                         subprocess.run([python_exe, "-m", "src.evaluation.hard_datapoints", "--config", "configs/hard_points.yaml"], 
                                     check=True, cwd = os.getcwd())
 
