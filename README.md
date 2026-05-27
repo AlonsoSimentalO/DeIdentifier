@@ -25,7 +25,7 @@ This repository contains the project pipeline for sensitive-data detection using
   - Run hyperparameter tuning: `python -m src.training.optuna_tune --config configs/optuna.yaml`
   - Rank hard datapoints: `python -m src.evaluation.hard_datapoints --config configs/hard_points.yaml`
 - new:
-  - streamlit run Deidentifier.py
+  - streamlit run Deidentifier_app.py
 
 ## Key Outputs
 - Trained model/checkpoint: `artifacts/model/`
