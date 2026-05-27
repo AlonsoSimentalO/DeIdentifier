@@ -8,7 +8,8 @@ from datetime import datetime
 import sys
 import pandas as pd
 import subprocess
-                                    
+
+# Page configuration
 st.set_page_config(page_title="DeID Pipeline", layout="wide")
 
 # Reduce flicker during rerun
@@ -26,7 +27,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# two columns, define column widths
+# Two columns with column widths
 col_left, col_right = st.columns([5, 5], gap="large")
 
 # Left sidebar - Labeling Section
@@ -36,9 +37,8 @@ with col_left:
     
     if st.button("🔗 Open LabelStudio"):
         try:
-            # Open LabelStudio in default browser
+            # Open LabelStudio in browser
             subprocess.Popen(["label-studio", "start"])
-            # project_url = "http://localhost:8084/projects/1/data?tab=1"
             success_label = ("Opening LabelStudio in browser."
                             "\nThis may take a few seconds."
                             "\n\nPlease then import, label and export your data in the 'Deidentifier' project."
@@ -46,30 +46,31 @@ with col_left:
             )
 
             st.success(success_label)
-            
         except:
             st.error("Could not start LabelStudio. Make sure it's installed.")
-
 
     st.divider()
     st.subheader("Import from Downloads")
 
     # Get Downloads folder
     downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
-    
+
+    # Define number of seconds before refresh
     n_secs = 10
     # Auto-refresh toggle
     auto_refresh = st.checkbox(f"Auto-refresh Downloads every {n_secs} seconds", value=True)
 
-    # List csv files
+    # List csv files that contain word 'project' in them
+      # This is how the downloads from label-studio appear
     if os.path.exists(downloads_path):
         csv_files = [
             f for f in os.listdir(downloads_path) 
             if f.lower().endswith('.csv') and 'project' in f.lower()
         ]
         csv_files.sort(key=lambda x: os.path.getmtime(os.path.join(downloads_path, x)), reverse=True)
-        
-        if len(csv_files)>0:
+
+        # Only if there is at least 1 file there
+        if len(csv_files) > 0:
             st.write("**Recent csv files in Downloads:**")
             for file in csv_files[:3]:   # limit to 3 most recent
                 col_a, col_b = st.columns([3, 1])
@@ -97,7 +98,6 @@ with col_left:
                                 st.success("Moved ✅")
                                 st.toast(f"✅ Processed and moved: {file}", icon="✅")
                                 time.sleep(2)
-                                #st.rerun()
 
                                 # Push to github
                                 try:
@@ -129,6 +129,7 @@ with col_left:
                                 st.error("CSV must contain at least 'text' and 'label' columns")
                         except Exception as e:
                             st.error(f"Error: {e}")
+        # in case no csv-project files
         else:
             st.info("No CSV files found in Downloads")
     else:
@@ -146,7 +147,7 @@ if not auto_refresh:
         st.markdown("<h2>Pipeline</h2>", unsafe_allow_html=True)
         password = st.text_input("Enter password", type="password")
         
-        #
+        # Define python_exe for later
         python_exe = sys.executable
         # Define path to human labelled
         human_labeled_path = "data\human_labelled"
@@ -170,7 +171,8 @@ if not auto_refresh:
                         st.success(f"✅ Successfully generated {n_synth_data} samples")
 
                         st.write("2. Combining datasets...")
-                        subprocess.run([python_exe, "-m", "src.data_proc.process_data"], check=True, cwd=os.getcwd())
+                        subprocess.run([python_exe, "-m", "src.data_proc.process_data"], 
+                                       check=True, cwd=os.getcwd())
 
             
                         st.write("3. Training model...")
